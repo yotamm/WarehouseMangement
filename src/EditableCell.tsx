@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-const EditableCell = (props) => {
+
+const EditableCell = (props: any) => {
 	const [isEditMode, setIsEditMode] = useState(false);
-	const [text, setText] = useState(props.text);
+	const _ref = useRef(null);
 
-	return isEditMode ? <input type="text" value={text} onBlur={event => {
-		setIsEditMode(false);
-		setText(event.target.value);
-		props.onChange(props.id);
-	}}/> : <div onClick={() => setIsEditMode(true)}>{text}</div>;
+	const handleClick = useCallback((e: Event) => {
+		if(isEditMode && _ref && _ref.current && _ref.current !== e.target) {
+			setIsEditMode(false);
+		}
+	}, [isEditMode]);
+
+	const onTextClick = useCallback(() => {
+		setIsEditMode(true);
+	}, []);
+
+	useEffect(() => {
+		document.addEventListener('click', handleClick);
+
+		return () => {
+			document.removeEventListener('click', handleClick);
+		}
+	}, [handleClick]);
+
+	return isEditMode ? <input ref={_ref}
+	                           type="text"
+	                           value={props.text}
+	                           onChange={e => props.onChange(props.id, {[props.field]: e.target.value})}/> :
+	       <div onClick={onTextClick}>{props.text}</div>;
 };
 
 export default EditableCell;

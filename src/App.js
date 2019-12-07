@@ -1,26 +1,43 @@
-import React                         from 'react';
-import { getInventory, getProducts } from "./api.ts";
+import React, { useCallback, useEffect, useState } from 'react';
+import { getInventory }               from "./api.ts";
 import './App.css';
-import ProductList                   from "./ProductList.tsx";
-import InventoryList                 from "./InventoryList.tsx";
+import ProductList                                 from "./ProductList.tsx";
+import InventoryList                               from "./InventoryList.tsx";
 
 function App() {
-	const products = getProducts();
-	const inventory = getInventory();
-	let categories = [];
-	products.forEach(value => categories.push(...value.categories));
-	categories = Array.from(new Set(categories));
+	const [inventory, setInventory] = useState([]);
+
+	useEffect(() => {
+		setInventory(getInventory());
+	}, []);
+
+	const updateProducts = useCallback((productId, newValues) => {
+		const originalProdIndex = inventory.findIndex(item => item.product.id === productId);
+     inventory[originalProdIndex].product = {...inventory[originalProdIndex].product, ...newValues};
+     setInventory([...inventory]);
+	}
+, [inventory]);
+
+	const updateInventory = useCallback((productId, newValues) => {
+		const originalProdIndex = inventory.findIndex(item => item.product.id === productId);
+     inventory[originalProdIndex] = {...inventory[originalProdIndex], ...newValues};
+     setInventory([...inventory]);
+	}
+, [inventory]);
+
+	let categories = new Set();
+	inventory.forEach(value => categories.add(...value.product.categories));
 	let totalAmount = 0;
-	inventory.forEach(value => totalAmount+=value.amount);
+	inventory.forEach(value => totalAmount += parseInt(value.amount));
 	return (
 			<div className='tables-container'>
 				<div className={'ui raised very padded text container segment'}>
-					<ProductList products={products}/>
+					<ProductList updateProducts={updateProducts} products={inventory.map(value => value.product)}/>
 					<br/>
-					<p># of products: {products.length} | # of categories: {categories.length}</p>
+					<p># of products: {inventory.length} | # of categories: {categories.size}</p>
 				</div>
 				<div className={'ui raised very padded text container segment'}>
-					<InventoryList inventory={inventory}/>
+					<InventoryList updateProducts={updateProducts} updateInventory={updateInventory} inventory={inventory}/>
           <br/>
           <p># of products: {inventory.length} | Total amount: {totalAmount}</p>
 				</div>
