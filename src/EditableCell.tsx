@@ -23,10 +23,13 @@ const EditableCell = (props: any) => {
 		}
 	}, [handleClick]);
 
-	return isEditMode ? <input ref={_ref}
-	                           type="text"
-	                           value={props.text}
-	                           onChange={e => props.onChange(props.id, {[props.field]: e.target.value})}/> :
+	return isEditMode ?
+	       (<div className="ui input">
+		       <input ref={_ref}
+		              type="text"
+		              value={props.text}
+		              onChange={e => props.onChange(props.id, {[props.field]: e.target.value})}/>
+	       </div>) :
 	       <div onClick={onTextClick}>{props.text}</div>;
 };
 

@@ -4,7 +4,7 @@ import EditableCell from "./EditableCell";
 
 const ProductList = (props: any) => {
 	return (
-			<table>
+			<table className="ui celled table">
 				<thead>
 					<tr>
 						<th>ID</th>
