@@ -18,3 +18,5 @@ export type ProductInventory = {
 	amount: number;
 	location: ProductLocation;
 };
+
+export type updateFunction = (productId: number, newValues: {}) => void;

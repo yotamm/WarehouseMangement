@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { updateFunction }                                  from "./types";
 
 
-const EditableCell = (props: any) => {
+const EditableCell = (props: {text: string | number, field: string, id: number, type: string, onChange: updateFunction}) => {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const _ref = useRef(null);
 
@@ -26,9 +27,9 @@ const EditableCell = (props: any) => {
 	return isEditMode ?
 	       (<div className="ui input">
 		       <input ref={_ref}
-		              type="text"
+		              type={props.type}
 		              value={props.text}
-		              onChange={e => props.onChange(props.id, {[props.field]: e.target.value})}/>
+		              onChange={e => props.onChange(props.id, {[props.field]: props.type === 'number' ? parseInt(e.target.value) : e.target.value})}/>
 	       </div>) :
 	       <div onClick={onTextClick}>{props.text}</div>;
 };

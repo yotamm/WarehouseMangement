@@ -1,8 +1,8 @@
-import React        from "react";
-import { Product }  from "./types";
-import EditableCell from "./EditableCell";
+import React                                 from "react";
+import { Product, Products, updateFunction } from "./types";
+import EditableCell                          from "./EditableCell";
 
-const ProductList = (props: any) => {
+const ProductList = (props: {products: Products, updateProducts: updateFunction}) => {
 	return (
 			<table className="ui celled table">
 				<thead>
@@ -17,8 +17,8 @@ const ProductList = (props: any) => {
 					{props.products.map((prod: Product) => (
 							<tr key={prod.id}>
 								<td>{prod.id}</td>
-								<td><EditableCell onChange={props.updateProducts} field="name" text={prod.name} id={prod.id}/></td>
-								<td><EditableCell text={prod.price} field="price" id={prod.id}/></td>
+								<td><EditableCell onChange={props.updateProducts} field="name" text={prod.name} id={prod.id} type="text"/></td>
+								<td><EditableCell onChange={props.updateProducts} field="price" text={prod.price} id={prod.id} type="number"/></td>
 								<td>{prod.categories.join(', ')}</td>
 							</tr>
 					))}
